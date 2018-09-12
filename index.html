@@ -9,102 +9,106 @@
     <script src="main.js"></script>
 </head>
 <body>
-    <!-- <section>
-        <h1>Demo 1</h1>
-        <p id="content-wrapper1">Hello World!</p>
-        <script>
-            console.log(document.getElementById("content-wrapper1").innerHTML);
-        </script>
-    </section>
-    <section>
-        <h1>Demo 2</h1>
-        <p id="content-wrapper">你是谁？</p>
-        <input id="name-input" type="text" placeholder="输入你的名字">
-        <button id="send-btn">发送</button>
-        <script>        
-            document.getElementById("send-btn").onclick = function() {
-                document.getElementById("content-wrapper").innerHTML = 'Hello ' + document.getElementById("name-input").value;
-            }
-        </script>
-    </section>
+    <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">    
+    <title>IFE ECMAScript</title>
+</head>
+<body>        
+    <div id="wrapper">
+        <div id="news-top" class="section">
+            <h3>Some title</h3>
+            <div class="content">
+                <ul>
+                    <li><span>HTML</span><a href="">Some Link1</a></li>
+                    <li><span>JS</span><a class="active" href="">Some Link2</a></li>
+                    <li><span>CSS</span><a href="">Some Link3</a></li>
+                    <li><span>JS</span><a href="">Some Link4</a></li>
+                </ul>
+            </div>
+            <img src="">
+            <p class="">Some Text</p>
+        </div>
+        <div id="news-normal" class="section">
+            <h3>Some title</h3>
+            <div class="content">
+                <ul>
+                    <li><span>HTML</span><a href="">Some Link1</a></li>
+                    <li><span>HTML</span><a href="">Some Link2</a></li>
+                    <li><span>JS</span><a class="active" href="#">Some Link3</a></li>
+                    <li><span>CSS</span><a href="">Some Link4</a></li>
+                </ul>
+            </div>
+            <img src="">
+            <p class="">Some Text</p>
+        </div>      
+    </div>
+    <script>
 
-    <section>
-        <input id="first-number" type="number" value="0" placeholder="第一个数字">
-        <input id="second-number" type="number" value="0" placeholder="第二个数字">
-        <button id="add-btn">加</button>
-        <button id="minus-btn">减</button>
-        <button id="times-btn">乘</button>
-        <button id="divide-btn">除</button>
-        <p id="result">运算结果</p>
-        <script>
-            function setResult(result) {
-                document.getElementById('result').innerHTML = '运算结果: ' + result;
+    function getAllListItem() {
+        // 返回页面中所有li标签
+        return document.querySelectorAll('li');
+    }
+
+    function findAllHtmlSpanInOneSection(sectionId) {
+        // 返回某个section下所有span中内容为HTML的span标签
+        let spans = document.getElementById(sectionId).getElementsByTagName('span');
+        let ret = []
+        for( s of spans ) {
+            if( s.innerHTML == 'HTML' ) {
+                ret.push(s);
             }
-            function getNumber(id) {
-                return parseFloat(document.getElementById(id).value);
-            }
-            function op(flag) {
-                return function() {
-                    let a = getNumber('first-number');
-                    let b = getNumber('second-number');
-                    let result = 0;
-                    switch( flag ) {
-                        case '+':
-                            result = a + b;
-                            break;
-                        case '-':
-                            result = a - b;
-                            break;
-                        case '*':
-                            result = a * b;
-                            break;
-                        case '/':
-                            if( Math.abs(b) < Number.EPSILON ) {
-                                console.log("除数不能为0");
-                                return;
-                            }
-                            result = a / b;
-                            break;
-                        default:
-                            return;
-                    }
-                    setResult(result);
+        }
+        console.log(`返回${sectionId}下所有span中内容为HTML的span标签, 个数：${ret.length}`)
+        return ret;
+    }
+
+    function findListItem(sectionId, spanCont) {
+        // 返回某个section下，所有所包含span内容为spanCont的LI标签
+        let lis = document.getElementById(sectionId).getElementsByTagName('li');
+        let ret = [];
+        for( li of lis ) {
+            let spans = li.getElementsByTagName('span');
+            for( span of spans ) {
+                if( span.innerHTML === spanCont ) {
+                    ret.push(li);
+                    break;
                 }
             }
-            document.getElementById('add-btn').onclick = op('+')
-            document.getElementById('minus-btn').onclick = op('-')
-            document.getElementById('times-btn').onclick = op('*')
-            document.getElementById('divide-btn').onclick = op('/')
-        </script>
-    </section> -->
+        }
+        console.log(`返回某个${sectionId}下，所有所包含'${spanCont}'内容为spanCont的LI标签, 个数: ${ret.length}`)
+        return ret;
+    }
 
-    <section>
-        <input id="dec-number" type="number" placeholder="输入一个十进制非负整数">
-        <button id="trans-btn">转化为二进制</button>
-        <p id="result">运算结果</p>
-        <script>
-        function setResult(result) {
-            document.getElementById('result').innerHTML = '运算结果: ' + result;
-        }
-        function getNumber(id) {
-            return parseFloat(document.getElementById(id).value);
-        }
-        function dec2bin(decNumber) {
-            // 在这里实现你的转化方法，注意需要判断输入必须为一个非负整数
-            if( decNumber < 0 ) {
-                console.log("请输入一个非负整数");
-                return undefined;
+    function getActiveLinkContent(sectionId) {
+        // 返回某个section下，class为active的链接中包含的文字内容
+        let activeNodes = document.getElementById(sectionId).getElementsByClassName('active');
+        let ret = [];
+        for( node of activeNodes ) {
+            if( node.tagName === 'A' ) {
+                ret.push(node.innerHTML);
             }
-            return Number(decNumber).toString(2);
         }
-        
-        // 实现党点击转化按钮时，将输入的十进制数字转化为二进制，并显示在result的p标签内
-        // Some coding
-        document.getElementById('trans-btn').onclick = function() {
-            let binR = dec2bin(parseInt(document.getElementById('dec-number').value));
-            setResult(binR ? binR : '输入错误!!');
+        for( r of ret ) {
+            console.log(r);
         }
-        </script>
-    </section>
+        return ret;
+    }
+
+    findAllHtmlSpanInOneSection('news-top');
+    findAllHtmlSpanInOneSection('news-normal');
+
+    findListItem('news-top', 'HTML');
+    findListItem('news-normal', 'HTML');
+
+    findListItem('news-top', 'JS');
+    findListItem('news-normal', 'JS');
+
+    getActiveLinkContent('news-top');
+    getActiveLinkContent('news-normal');
+    </script>
+</body>
+</html>
 </body>
 </html>
