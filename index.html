@@ -16,97 +16,19 @@
     <title>IFE ECMAScript</title>
 </head>
 <body>        
-    <div id="wrapper">
-        <div id="news-top" class="section">
-            <h3>Some title</h3>
-            <div class="content">
-                <ul>
-                    <li><span>HTML</span><a href="">Some Link1</a></li>
-                    <li><span>JS</span><a class="active" href="">Some Link2</a></li>
-                    <li><span>CSS</span><a href="">Some Link3</a></li>
-                    <li><span>JS</span><a href="">Some Link4</a></li>
-                </ul>
-            </div>
-            <img src="">
-            <p class="">Some Text</p>
-        </div>
-        <div id="news-normal" class="section">
-            <h3>Some title</h3>
-            <div class="content">
-                <ul>
-                    <li><span>HTML</span><a href="">Some Link1</a></li>
-                    <li><span>HTML</span><a href="">Some Link2</a></li>
-                    <li><span>JS</span><a class="active" href="#">Some Link3</a></li>
-                    <li><span>CSS</span><a href="">Some Link4</a></li>
-                </ul>
-            </div>
-            <img src="">
-            <p class="">Some Text</p>
-        </div>      
-    </div>
+    <input id="name" type="text">    
+    <button id="submit-btn">Submit</button>
     <script>
-
-    function getAllListItem() {
-        // 返回页面中所有li标签
-        return document.querySelectorAll('li');
-    }
-
-    function findAllHtmlSpanInOneSection(sectionId) {
-        // 返回某个section下所有span中内容为HTML的span标签
-        let spans = document.getElementById(sectionId).getElementsByTagName('span');
-        let ret = []
-        for( s of spans ) {
-            if( s.innerHTML == 'HTML' ) {
-                ret.push(s);
+        document.getElementById('submit-btn').onclick = function() {
+            console.log(document.getElementById('name').value);
+        }
+        document.getElementById('name').onkeydown = function(e) {
+            if( e.which == 13 ) {
+                console.log(document.getElementById('name').value);
+            } else if( e.which == 27 ) {
+                document.getElementById('name').value = '';
             }
         }
-        console.log(`返回${sectionId}下所有span中内容为HTML的span标签, 个数：${ret.length}`)
-        return ret;
-    }
-
-    function findListItem(sectionId, spanCont) {
-        // 返回某个section下，所有所包含span内容为spanCont的LI标签
-        let lis = document.getElementById(sectionId).getElementsByTagName('li');
-        let ret = [];
-        for( li of lis ) {
-            let spans = li.getElementsByTagName('span');
-            for( span of spans ) {
-                if( span.innerHTML === spanCont ) {
-                    ret.push(li);
-                    break;
-                }
-            }
-        }
-        console.log(`返回某个${sectionId}下，所有所包含'${spanCont}'内容为spanCont的LI标签, 个数: ${ret.length}`)
-        return ret;
-    }
-
-    function getActiveLinkContent(sectionId) {
-        // 返回某个section下，class为active的链接中包含的文字内容
-        let activeNodes = document.getElementById(sectionId).getElementsByClassName('active');
-        let ret = [];
-        for( node of activeNodes ) {
-            if( node.tagName === 'A' ) {
-                ret.push(node.innerHTML);
-            }
-        }
-        for( r of ret ) {
-            console.log(r);
-        }
-        return ret;
-    }
-
-    findAllHtmlSpanInOneSection('news-top');
-    findAllHtmlSpanInOneSection('news-normal');
-
-    findListItem('news-top', 'HTML');
-    findListItem('news-normal', 'HTML');
-
-    findListItem('news-top', 'JS');
-    findListItem('news-normal', 'JS');
-
-    getActiveLinkContent('news-top');
-    getActiveLinkContent('news-normal');
     </script>
 </body>
 </html>
