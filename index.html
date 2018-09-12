@@ -9,7 +9,7 @@
     <script src="main.js"></script>
 </head>
 <body>
-    <section>
+    <!-- <section>
         <h1>Demo 1</h1>
         <p id="content-wrapper1">Hello World!</p>
         <script>
@@ -59,6 +59,10 @@
                             result = a * b;
                             break;
                         case '/':
+                            if( Math.abs(b) < Number.EPSILON ) {
+                                console.log("除数不能为0");
+                                return;
+                            }
                             result = a / b;
                             break;
                         default:
@@ -71,6 +75,35 @@
             document.getElementById('minus-btn').onclick = op('-')
             document.getElementById('times-btn').onclick = op('*')
             document.getElementById('divide-btn').onclick = op('/')
+        </script>
+    </section> -->
+
+    <section>
+        <input id="dec-number" type="number" placeholder="输入一个十进制非负整数">
+        <button id="trans-btn">转化为二进制</button>
+        <p id="result">运算结果</p>
+        <script>
+        function setResult(result) {
+            document.getElementById('result').innerHTML = '运算结果: ' + result;
+        }
+        function getNumber(id) {
+            return parseFloat(document.getElementById(id).value);
+        }
+        function dec2bin(decNumber) {
+            // 在这里实现你的转化方法，注意需要判断输入必须为一个非负整数
+            if( decNumber < 0 ) {
+                console.log("请输入一个非负整数");
+                return undefined;
+            }
+            return Number(decNumber).toString(2);
+        }
+        
+        // 实现党点击转化按钮时，将输入的十进制数字转化为二进制，并显示在result的p标签内
+        // Some coding
+        document.getElementById('trans-btn').onclick = function() {
+            let binR = dec2bin(parseInt(document.getElementById('dec-number').value));
+            setResult(binR ? binR : '输入错误!!');
+        }
         </script>
     </section>
 </body>
