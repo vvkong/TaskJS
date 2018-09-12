@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>所有JS的任务纪录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="main.js"></script>
+</head>
+<body>
+    <section>
+        <h1>Demo 1</h1>
+        <p id="content-wrapper1">Hello World!</p>
+        <script>
+            console.log(document.getElementById("content-wrapper1").innerHTML);
+        </script>
+    </section>
+    <section>
+        <h1>Demo 2</h1>
+        <p id="content-wrapper">你是谁？</p>
+        <input id="name-input" type="text" placeholder="输入你的名字">
+        <button id="send-btn">发送</button>
+        <script>        
+            document.getElementById("send-btn").onclick = function() {
+                document.getElementById("content-wrapper").innerHTML = 'Hello ' + document.getElementById("name-input").value;
+            }
+        </script>
+    </section>
+
+    <section>
+        <input id="first-number" type="number" value="0" placeholder="第一个数字">
+        <input id="second-number" type="number" value="0" placeholder="第二个数字">
+        <button id="add-btn">加</button>
+        <button id="minus-btn">减</button>
+        <button id="times-btn">乘</button>
+        <button id="divide-btn">除</button>
+        <p id="result">运算结果</p>
+        <script>
+            function setResult(result) {
+                document.getElementById('result').innerHTML = '运算结果: ' + result;
+            }
+            function getNumber(id) {
+                return parseFloat(document.getElementById(id).value);
+            }
+            function op(flag) {
+                return function() {
+                    let a = getNumber('first-number');
+                    let b = getNumber('second-number');
+                    let result = 0;
+                    switch( flag ) {
+                        case '+':
+                            result = a + b;
+                            break;
+                        case '-':
+                            result = a - b;
+                            break;
+                        case '*':
+                            result = a * b;
+                            break;
+                        case '/':
+                            result = a / b;
+                            break;
+                        default:
+                            return;
+                    }
+                    setResult(result);
+                }
+            }
+            document.getElementById('add-btn').onclick = op('+')
+            document.getElementById('minus-btn').onclick = op('-')
+            document.getElementById('times-btn').onclick = op('*')
+            document.getElementById('divide-btn').onclick = op('/')
+        </script>
+    </section>
+</body>
+</html>
