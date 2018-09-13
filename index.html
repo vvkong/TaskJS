@@ -53,49 +53,146 @@
         }
         #table {
             margin: 10px;
-            border: 1px solid black;
+            border: "1";
+            border-collapse: collapse;
         }
         th {
             width: 100px;
-            /* border: 1px solid black; */
+            margin: 0;
+            padding: 2px;
+            border: 1px solid black;
             background: rgb(156, 235, 235);
         }
         td {
             vertical-align: middle;
             text-align: center;
+            margin: 0;
+            padding: 2px;
+            border: 1px solid forestgreen;
+        }
+        .selected-wrapper {
+           display: flex;
+           flex-flow: row wrap;
+        }
+        ul {
+            list-style-type: none;
+            display: inline-block;
+            margin: 0 40px 20px 0px;
+            padding: 5px 10px 5px 5px;
+            border-radius: 10px;
+            border: 1px solid aquamarine;
         }
     </style>
 </head>
 <body> 
     <section>
-        <div>
-            <select name="region" id="region">
-            </select>
-            <select name="product" id="product"></select>
+        <div class="selected-wrapper">
+            <span>地区：</span>
+            <ul id="region">
+                <li><input type="radio" name="region-all-check" id="region-all">全部</li>
+            </ul>
+            <span>商品：</span>
+            <ul id="product">
+                <li><input type="radio" name="product-all-check" id="product-all">全部</li>
+            </ul>
         </div>
+        
         <div class="table-wrapper">
             <table id="table">
-                <tr>
-                    <th>商品</th>
-                    <th>地区</th>
-                    <th>一月</th>
-                    <th>二月</th>
-                    <th>三月</th>
-                    <th>四月</th>
-                    <th>五月</th>
-                    <th>六月</th>
-                    <th>七月</th>
-                    <th>八月</th>
-                    <th>九月</th>
-                    <th>十月</th>
-                    <th>十一月</th>
-                    <th>十二月</th>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>商品</th>
+                        <th>地区</th>
+                        <th>一月</th>
+                        <th>二月</th>
+                        <th>三月</th>
+                        <th>四月</th>
+                        <th>五月</th>
+                        <th>六月</th>
+                        <th>七月</th>
+                        <th>八月</th>
+                        <th>九月</th>
+                        <th>十月</th>
+                        <th>十一月</th>
+                        <th>十二月</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
             </table>
         </div>
     </section>
 
     <script>
+        function getLiElement(elRoot, value, checked) {
+            let elLi = document.createElement('li');
+            let elInput = document.createElement('input');
+            elInput.setAttribute('type', 'checkbox');
+            if( checked ) {
+                elInput.setAttribute('checked', 'checked');
+            }
+            elInput.onchange = function(e) {
+                checkBoxState()
+                if( noOneChecked(elRoot) ) {
+                    e.target.checked = true;
+                }
+            }
+            elLi.appendChild(elInput);
+            let elSpan = document.createElement('label');
+            elSpan.innerHTML = value;
+            elLi.appendChild(elSpan);
+            return elLi;
+        }
+
+        function getCheckedText(rootId) {
+            let elRoot = document.getElementById(rootId);
+            let ret = [];
+            let elInputs = elRoot.getElementsByTagName('input');
+            for( let el of elInputs ) {
+                if( el.type === 'checkbox' && el.checked ) {
+                    ret.push(el.parentElement.lastElementChild.textContent);
+                }
+            }
+            return ret;
+        }
+        function checkBoxState() {
+            checkBoxState_(document.getElementById('region'));
+            checkBoxState_(document.getElementById('product'));
+        }
+        function checkAll(elRoot) {
+            let elInputs = elRoot.getElementsByTagName('input');
+            for( let el of elInputs ) {
+                if( el.type === 'checkbox' ) {
+                    el.checked = true;
+                }
+            }
+        }
+
+        function noOneChecked(elRoot) {
+            let elInputs = elRoot.getElementsByTagName('input');
+            let cnt = 0;
+            for( let el of elInputs ) {
+                if( el.type === 'checkbox' && el.checked ) {
+                    cnt++;
+                }
+            }
+            return cnt == 0;
+        }
+        function checkBoxState_(elRoot) {
+            let elInputs = elRoot.getElementsByTagName('input');
+            let elAll;
+            let allCheck = true;
+            for( let el of elInputs ) {
+                if( el.type === 'radio' ) {
+                    elAll = el;
+                } else if( el.type === 'checkbox' && (!el.checked) ) {
+                    allCheck = false;
+                }
+            }
+            if( elAll ) {
+                elAll.checked = allCheck;
+            }
+        }
         function init() {
             const products = new Set();
             const regions = new Set();
@@ -106,20 +203,24 @@
 
             let elRegion = document.getElementById('region');
             regions.forEach( (v) => {
-                let opt = document.createElement('option');
-                opt.setAttribute('value', v);
-                opt.innerHTML = v;
-                elRegion.appendChild(opt);
+                elRegion.appendChild(getLiElement(elRegion, v, true));
             });
-            elRegion.firstElementChild.setAttribute('selected', 'selected');
+            
             let elProduct = document.getElementById('product');
             products.forEach( (v) => {
-                let opt = document.createElement('option');
-                opt.setAttribute('value', v);
-                opt.innerHTML = v;
-                elProduct.appendChild(opt);
+                elProduct.appendChild(getLiElement(elProduct, v, true));
             })
-            elProduct.firstElementChild.setAttribute('selected', 'selected');
+            document.getElementById('region-all').onchange = function(e) {
+                if( e.target.checked ) {
+                    checkAll(elRegion);
+                }
+            }
+            document.getElementById('product-all').onchange = function(e) {
+                if( e.target.checked ) {
+                    checkAll(elProduct);
+                }
+            }
+            checkBoxState();
 
             elRegion.onchange = function(e) {
                 rendTable();
@@ -130,23 +231,7 @@
 
             rendTable();
         }
-        function rendTable() {
-            let elTable = document.getElementById('table');
-            while( elTable.childElementCount > 1 ) {
-                elTable.removeChild(elTable.lastChild);
-            }
-
-            const regions = new Set();
-            sourceData.forEach( (v) => {
-                regions.add(v.region);
-            });
-
-            let region = document.getElementById('region').value;
-            let product = document.getElementById('product').value;
-            console.log(`region: ${region}, product: ${product}`);
-            let records = sourceData.filter( (v) => {
-                return (v.product === product && v.region === region);
-            });
+        function insertData(elBody, records, firstKey, secondKey) {
             if( records.length > 0 ) {
                 let first = true;
                 records.forEach( (v) => {
@@ -155,13 +240,13 @@
                         first = false;
                         let elTd = document.createElement('td');
                         elTd.setAttribute("rowspan", records.length);
-                        elTd.innerHTML = region;
-                        elTr.appendChild(elTd);
-
-                        elTd = document.createElement('td');
-                        elTd.innerHTML = product;
+                        elTd.innerHTML = v[firstKey];
                         elTr.appendChild(elTd);
                     }
+                    
+                    let elTd = document.createElement('td');
+                    elTd.innerHTML = v[secondKey];
+                    elTr.appendChild(elTd);
                     
                     v.sale.forEach( (v) => {
                         let elTd = document.createElement('td');
@@ -169,8 +254,44 @@
                         elTr.appendChild(elTd);
                     });
                     
-                    elTable.appendChild(elTr);                    
+                    elBody.appendChild(elTr);                    
                 })
+            }
+        }
+
+        function inArr(v, arr) {
+            for( let va of arr ) {
+                if( v === va ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        function rendTable() {
+            let regions = getCheckedText('region');
+            let products = getCheckedText('product');
+            let selectData = sourceData.filter( (v) => {
+                return inArr(v.product, products) && inArr(v.region, regions);
+            })
+
+            let elTable = document.getElementById('table');
+            elTable.lastElementChild.innerHTML = '';
+            
+            
+            let elThTds = elTable.firstElementChild.getElementsByTagName('th');
+            let firstProduct = products.length === 1;
+            elThTds[0].innerHTML = firstProduct ? '商品' : '地区';
+            elThTds[1].innerHTML = firstProduct ? '地区' : '商品';
+
+            
+            let firstKey = products.length === 1 ? 'product' : 'region';
+            let secondKey = products.length === 1 ? 'region' : 'product';
+            let data = products.length === 1 ? products : regions;
+            for( let d of data ) {
+                let records = selectData.filter( (v) => {
+                    return v[firstKey] === d;
+                });
+                insertData(elTable.lastElementChild, records, firstKey, secondKey);
             }
         }
         
